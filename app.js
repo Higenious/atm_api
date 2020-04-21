@@ -3,7 +3,7 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
-
+const bodyParser = require('body-parser');
 let indexRouter = require('./routes/index_route');
 let usersRouter = require('./routes/users_route');
 let adminRouter = require('./routes/admin_route');
@@ -31,14 +31,17 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use((req, res, next) => {
+    
+    bodyParser.json()(req, res, err => {
+        if (err) {
+            console.error(err);
+            return res.sendStatus(400); // Bad request
+        }
+
+        next();
+    });
 });
 
 module.exports = app;

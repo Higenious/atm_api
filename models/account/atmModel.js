@@ -5,14 +5,15 @@ const schema = mongoose.Schema;
 
 let atm_machine = new schema({
    atm_machineId : {type:String, required: true, unique: true},
-   currency : [
-       { "2000" : {type:Number},
-         "500"  : {type:Number},
-         "200"  : {type:Number},
-         "100"  : {type:Number},
+   currency : 
+       { 
+         "note_2000"  : {type:Number},
+         "note_500"  : {type:Number},
+         "note_200" : {type:Number},
+         "note_100"  : {type:Number},
        }
-   ],
-   totalCurrency : {type:Number},
+   ,
+   total_Currency : {type:Number},
    atm_AdddressCode : {type:String }
 })
 
