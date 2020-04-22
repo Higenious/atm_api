@@ -50,6 +50,7 @@ How to run
     http://localhost:3000/admin/deposit
     method : POST
     Body   : JOSN
+    Desc   : Deposit will Increase existing Currencies Notes and total count
        {
 	       "atm_machineId" : "SBI120",
            "currency" :
@@ -89,7 +90,7 @@ How to run
      method : POST
      Body   : JOSN 
        {
-   	       "card_number" : 44445558,
+   	     "card_number" : 44445558,
 	       "pin" : 4444
       }
 
@@ -97,6 +98,9 @@ How to run
      http://localhost:3000/users/withdraw
      method : POST
      Body   : JOSN 
+     Desc   : withdraw of money from ATM should update existing currencies. 
+            : Limit Should be 2000 rs 
+            :  
       {
         	 "withdrawal_money" : 5007,
            "card_number" : 44445555,

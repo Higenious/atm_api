@@ -1,6 +1,6 @@
 const user = require("../../models/user/userModel").users;
 const { check } = require('express-validator');
-
+const atm_machine = require('../../models/account/atmModel').atm_machine;
 
 
 
@@ -10,23 +10,23 @@ const { check } = require('express-validator');
 
 /** function for user login */
 async function login(req, res) {
-     const { card_number,  pin } = req.body
-     if(card_number, pin && `${card_number}`.length === 8 && `${pin}`.length === 4){
-      try{
-         const query = { $and: [{ card_number: card_number },{ pin: pin } ] }
-        const result =  await user.find(query);
-           if(result !== undefined && result.length > 0){
-            res.send(result);
-           }
-           else{         
-            res.send( "Login Failure: Invalid card numnber or pin");
-           }
-      }catch(Error){
-         res.send(Error);
-      }       
-     }else{
+    const { card_number, pin } = req.body
+    if (card_number, pin && `${card_number}`.length === 8 && `${pin}`.length === 4) {
+        try {
+            const query = { $and: [{ card_number: card_number }, { pin: pin }] }
+            const result = await user.find(query);
+            if (result !== undefined && result.length > 0) {
+                res.send(result);
+            }
+            else {
+                res.send("Login Failure: Invalid card numnber or pin");
+            }
+        } catch (Error) {
+            res.send(Error);
+        }
+    } else {
         res.send('please Enter required Credentials')
-     }   
+    }
 }
 
 
@@ -64,25 +64,36 @@ async function signUp(req, res) {
 
 
 /** Withdraw Money */
- async function withdrawMoney(req, res) {
+async function withdrawMoney(req, res) {
     const { withdrawal_money, card_number, pin } = req.body;
     console.log('withdrawalmoney', withdrawal_money);
-    if(withdrawal_money <= 20000 ) {
-     //res.send('you can continue');
-     try{
-        const query = { $and: [{ card_number: card_number },{ pin: pin } ] }
-        const result =  await user.find(query);
-          if(result !== undefined && result.length > 0){
-           res.send(result);
-          }
-          else{         
-           res.send( "Login Failure: Invalid card numnber or pin");
-          }
-     }catch(Error){
-        res.send(Error);
-     }       
-    }else{
-      res.send('limit exceed!');
+    if (withdrawal_money <= 20000) {
+        try {
+            const query = { $and: [{ card_number: card_number }, { pin: pin }] }
+            const result = await user.find(query);
+            if (result !== undefined && result.length > 0) {
+                const availablCost = await atm_machine.find({});
+                console.log('availbelCost :>> ', availablCost[0].total_Currency);
+                if (withdrawal_money > availablCost[0].total_Currency) {
+                    res.send('Cash is Not Availabe in ATM please Visit Again !');
+                } else {
+                    if (2000 >= withdrawMoney) {
+                        console.log(' less than :?');
+                    } else {
+                        let remains = withdrawal_money / 2000;
+                        console.log('remian', Math.floor(remains));
+                    }    
+                    process.exit();   /// remove process.exit();
+                  }
+            }
+            else {
+                res.send("Login Failure: Invalid card numnber or pin");
+            }
+        } catch (Error) {
+            res.send(Error);
+        }
+    } else {
+        res.send('limit exceed!');
     }
 }
 
